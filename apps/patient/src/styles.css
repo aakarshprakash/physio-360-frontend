@@ -1,0 +1,6 @@
+@import '@physio/ui/styles.css';
+@source './';
+
+body {
+  padding-bottom: env(safe-area-inset-bottom);
+}

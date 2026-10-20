@@ -1,0 +1,21 @@
+{
+  "name": "@physio/core",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@date-fns/tz": "1.5.0",
+    "date-fns": "4.4.0",
+    "i18next": "25.10.10",
+    "react-i18next": "15.7.4"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}
