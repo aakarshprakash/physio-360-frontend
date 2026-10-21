@@ -27,6 +27,9 @@ const BillingPage = page(() => import('./routes/billing/BillingPage'), 'BillingP
 const InvoicePage = page(() => import('./routes/billing/InvoicePage'), 'InvoicePage');
 const ReportsPage = page(() => import('./routes/reports/ReportsPage'), 'ReportsPage');
 const StaffPage = page(() => import('./routes/staff/StaffPage'), 'StaffPage');
+const StaffProfilePage = page(() => import('./routes/staff/StaffProfilePage'), 'StaffProfilePage');
+const OnlineBookingsPage = page(() => import('./routes/online-bookings/OnlineBookingsPage'), 'OnlineBookingsPage');
+const ChangePasswordRequired = page(() => import('./routes/auth/ChangePasswordRequired'), 'ChangePasswordRequired');
 const SettingsPage = page(() => import('./routes/settings/SettingsPage'), 'SettingsPage');
 const AuditPage = page(() => import('./routes/audit/AuditPage'), 'AuditPage');
 const ProfilePage = page(() => import('./routes/profile/ProfilePage'), 'ProfilePage');
@@ -55,6 +58,15 @@ function RequireAuth() {
   if (!session) {
     const next = location.pathname + location.search;
     return <Navigate to={next && next !== '/' ? `/login?next=${encodeURIComponent(next)}` : '/login'} replace />;
+  }
+
+  // Administrator-issued passwords must be replaced before anything else.
+  if (session.must_change_password) {
+    return (
+      <SessionProvider session={session}>
+        <Lazy><ChangePasswordRequired /></Lazy>
+      </SessionProvider>
+    );
   }
 
   return (
@@ -109,6 +121,9 @@ const router = createBrowserRouter([
       { path: 'billing/invoices/:invoiceId', element: <RequirePermission any={['billing.view']}><InvoicePage /></RequirePermission> },
       { path: 'reports', element: <RequirePermission any={['reports.view']}><ReportsPage /></RequirePermission> },
       { path: 'staff', element: <RequirePermission any={['staff.manage']}><StaffPage /></RequirePermission> },
+      // Managers see anyone; staff can open their own record (the API enforces this).
+      { path: 'staff/:userId', element: <StaffProfilePage /> },
+      { path: 'online-bookings', element: <RequirePermission any={['appointments.manage']}><OnlineBookingsPage /></RequirePermission> },
       { path: 'settings', element: <RequirePermission any={['settings.manage']}><SettingsPage /></RequirePermission> },
       { path: 'audit', element: <RequirePermission any={['audit.view']}><AuditPage /></RequirePermission> },
       { path: 'consultations', element: <RequirePermission any={['clinical.view']}><ConsultationsPage /></RequirePermission> },

@@ -330,6 +330,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/public/clinics/{slug}/booking": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Clinic profile, branches, services and practitioners for the booking page */
+        get: operations["publicBooking.show"];
+        put?: never;
+        /** Request (or, in instant mode, book) an appointment */
+        post: operations["publicBooking.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/clinics/{slug}/booking/slots": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Free start times on a date ("any available" when no practitioner is chosen) */
+        get: operations["publicBooking.slots"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/clinics/{slug}/logo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Clinic logo (letterhead), for the booking page and emails */
+        get: operations["publicBooking.logo"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/platform/auth/login": {
         parameters: {
             query?: never;
@@ -656,6 +708,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /**
+         * @description ⚠️ Cannot generate request documentation: Cannot evaluate validation rules (1 evaluators failed):
+         *       [NodeRulesEvaluator] Cannot access private constant App\Http\Controllers\Api\Staff\AttendanceController::LOCATION_RULES (at D:\physio-360\backend\vendor\dedoc\scramble\src\Support\OperationExtensions\RulesEvaluator\ConstFetchEvaluator.php:42)
+         */
         post: operations["attendance.checkIn"];
         delete?: never;
         options?: never;
@@ -672,6 +728,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /**
+         * @description ⚠️ Cannot generate request documentation: Cannot evaluate validation rules (1 evaluators failed):
+         *       [NodeRulesEvaluator] Cannot access private constant App\Http\Controllers\Api\Staff\AttendanceController::LOCATION_RULES (at D:\physio-360\backend\vendor\dedoc\scramble\src\Support\OperationExtensions\RulesEvaluator\ConstFetchEvaluator.php:42)
+         */
         post: operations["attendance.checkOut"];
         delete?: never;
         options?: never;
@@ -708,6 +768,23 @@ export interface paths {
         put?: never;
         /** Sign in (session cookie). Call GET /sanctum/csrf-cookie first */
         post: operations["auth.login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mobile app sign-in: returns a bearer token (send as "Authorization: Bearer …") */
+        post: operations["auth.token"];
         delete?: never;
         options?: never;
         head?: never;
@@ -755,7 +832,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Sign out and invalidate the session */
+        /** Sign out: revokes the mobile token, or ends the web session */
         post: operations["auth.logout"];
         delete?: never;
         options?: never;
@@ -1350,6 +1427,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/patients/{patient}/photo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Profile photo (identification at the front desk and in the mobile app) */
+        get: operations["document.photo"];
+        put?: never;
+        post: operations["document.uploadPhoto"];
+        delete: operations["document.deletePhoto"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/patients/{patient}/consents": {
         parameters: {
             query?: never;
@@ -1764,6 +1858,71 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/online-bookings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["onlineBooking.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/online-bookings/{booking}/matches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Existing patients this request could belong to (same phone number) */
+        get: operations["onlineBooking.matches"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/online-bookings/{booking}/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["onlineBooking.confirm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/online-bookings/{booking}/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["onlineBooking.decline"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/packages": {
         parameters: {
             query?: never;
@@ -2111,6 +2270,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/settings/clinic/logo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Letterhead logo used on invoices, receipts and the public booking page */
+        post: operations["settings.uploadLogo"];
+        delete: operations["settings.deleteLogo"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/settings/branches": {
         parameters: {
             query?: never;
@@ -2376,14 +2552,53 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Everyone can list colleagues (needed for pickers); details are limited */
+        /**
+         * Everyone can list colleagues (needed for pickers); details are limited.
+         *     Team managers can ask for today's presence alongside each person
+         */
         get: operations["staff.index"];
         put?: never;
         /**
-         * Add a team member. They receive a password-setup email (reset link);
-         *     a temporary password is returned only when no mail can be sent
+         * Add a team member and choose how they get their first password:
+         *     "invite" emails a set-password link, "password" uses the one given,
+         *     "generate" creates one and returns it once. Admin-issued passwords
+         *     must be changed at first sign-in
          */
         post: operations["staff.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/staff/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Headline numbers for the team directory */
+        get: operations["staff.summary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/staff/roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Roles, what each one can do, and how many people hold it */
+        get: operations["staff.roles"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2397,9 +2612,47 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Employee profile with this month's performance, attendance and leave */
+        get: operations["staff.show"];
         put: operations["staff.update"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/staff/{user}/password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reset a team member's password: set one, generate one (returned once),
+         *     or email a reset link. Signs them out of every device
+         */
+        post: operations["staff.resetPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/staff/{user}/sign-out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sign a team member out of the web portal and the mobile app */
+        post: operations["staff.revokeSessions"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2688,6 +2941,9 @@ export interface components {
             city: string | null;
             timezone: string | null;
             is_active: boolean;
+            latitude: number | null;
+            longitude: number | null;
+            geofence_radius_m: number;
         };
         /** ClinicalNoteResource */
         ClinicalNoteResource: {
@@ -3122,6 +3378,7 @@ export interface components {
             } | null;
             status: string;
             portal_enabled: boolean;
+            photo_url: string | null;
             created_at: string;
         };
         /**
@@ -3272,7 +3529,11 @@ export interface components {
             tax_rate_bp: number;
             color: string | null;
             is_active: boolean;
+            description: string | null;
+            online_bookable: boolean;
         };
+        /** StaffProfileResource */
+        StaffProfileResource: unknown[];
         /** SupportTicketResource */
         SupportTicketResource: {
             id: number;
@@ -3315,6 +3576,7 @@ export interface components {
             locale: string;
             status: string;
             plan: string;
+            logo_url: string | null;
             currency: {
                 code: string;
                 symbol: string;
@@ -3331,6 +3593,23 @@ export interface components {
                     name: string;
                 }[];
                 attendance_grace_minutes: number;
+                attendance_geofence: boolean;
+                online_booking: {
+                    enabled: boolean;
+                    mode: string;
+                    min_lead_minutes: number;
+                    max_days_ahead: number;
+                    allow_practitioner_choice: boolean;
+                    intro: unknown;
+                };
+                invoice: {
+                    terms: unknown;
+                    footer_note: unknown;
+                    bank_details: unknown;
+                    upi_id: unknown;
+                    signatory: unknown;
+                    accent_color: unknown;
+                };
                 payment_reminders: {
                     enabled: boolean;
                     channel: string;
@@ -3395,6 +3674,7 @@ export interface components {
             roles?: unknown[];
             branch_ids?: unknown[];
             last_login_at: string;
+            must_change_password?: boolean;
         };
     };
     responses: {
@@ -3498,6 +3778,7 @@ export type PrescriptionResource = components['schemas']['PrescriptionResource']
 export type ProgressEntryResource = components['schemas']['ProgressEntryResource'];
 export type RoomResource = components['schemas']['RoomResource'];
 export type ServiceResource = components['schemas']['ServiceResource'];
+export type StaffProfileResource = components['schemas']['StaffProfileResource'];
 export type SupportTicketResource = components['schemas']['SupportTicketResource'];
 export type SupportTicketStatus = components['schemas']['SupportTicketStatus'];
 export type TenantResource = components['schemas']['TenantResource'];
@@ -4164,6 +4445,117 @@ export interface operations {
             };
             404: components["responses"]["ModelNotFoundException"];
             422: components["responses"]["ValidationException"];
+        };
+    };
+    "publicBooking.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "publicBooking.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    branch_id: number;
+                    service_id: number;
+                    practitioner_id?: number | null;
+                    local_start: string;
+                    name: string;
+                    phone: string;
+                    /** Format: email */
+                    email?: string | null;
+                    gender?: components["schemas"]["Gender"] | null;
+                    age?: number | null;
+                    message?: string | null;
+                    source?: string | null;
+                    website?: string | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "publicBooking.slots": {
+        parameters: {
+            query: {
+                branch_id: number;
+                service_id: number;
+                practitioner_id?: number | null;
+                date: string;
+            };
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "publicBooking.logo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    "Transfer-Encoding": "chunked";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/octet-stream": string;
+                };
+            };
+            404: components["responses"]["ModelNotFoundException"];
         };
     };
     "platform.login": {
@@ -4955,6 +5347,17 @@ export interface operations {
                             on_leave: "full" | "am" | "pm" | null;
                             can_check_in: boolean;
                             can_check_out: boolean;
+                            check_in_distance_m: number | null;
+                            geofence: {
+                                required: boolean;
+                                sites: {
+                                    branch_id: number;
+                                    name: string;
+                                    latitude: number | null;
+                                    longitude: number | null;
+                                    radius_m: number;
+                                }[];
+                            };
                         };
                     };
                 };
@@ -4969,13 +5372,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    branch_id?: number | null;
-                };
-            };
-        };
+        requestBody?: never;
         responses: {
             200: {
                 headers: {
@@ -4995,6 +5392,17 @@ export interface operations {
                             on_leave: "full" | "am" | "pm" | null;
                             can_check_in: boolean;
                             can_check_out: boolean;
+                            check_in_distance_m: number | null;
+                            geofence: {
+                                required: boolean;
+                                sites: {
+                                    branch_id: number;
+                                    name: string;
+                                    latitude: number | null;
+                                    longitude: number | null;
+                                    radius_m: number;
+                                }[];
+                            };
                         };
                     };
                 };
@@ -5030,11 +5438,23 @@ export interface operations {
                             on_leave: "full" | "am" | "pm" | null;
                             can_check_in: boolean;
                             can_check_out: boolean;
+                            check_in_distance_m: number | null;
+                            geofence: {
+                                required: boolean;
+                                sites: {
+                                    branch_id: number;
+                                    name: string;
+                                    latitude: number | null;
+                                    longitude: number | null;
+                                    radius_m: number;
+                                }[];
+                            };
                         };
                     };
                 };
             };
             401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
         };
     };
     "attendance.register": {
@@ -5165,6 +5585,35 @@ export interface operations {
             422: components["responses"]["ValidationException"];
         };
     };
+    "auth.token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: email */
+                    email: string;
+                    password: string;
+                    device_name: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            422: components["responses"]["ValidationException"];
+        };
+    };
     "auth.forgotPassword": {
         parameters: {
             query?: never;
@@ -5271,6 +5720,7 @@ export interface operations {
                             tenant: components["schemas"]["TenantResource"];
                             branches: components["schemas"]["BranchResource"][];
                             permissions: unknown[];
+                            must_change_password: boolean;
                         };
                     };
                 };
@@ -5307,6 +5757,7 @@ export interface operations {
                             tenant: components["schemas"]["TenantResource"];
                             branches: components["schemas"]["BranchResource"][];
                             permissions: unknown[];
+                            must_change_password: boolean;
                         };
                     };
                 };
@@ -6853,6 +7304,96 @@ export interface operations {
             422: components["responses"]["ValidationException"];
         };
     };
+    "document.photo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The patient ID */
+                patient: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    "Transfer-Encoding": "chunked";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/octet-stream": string;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "document.uploadPhoto": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The patient ID */
+                patient: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /**
+                     * Format: binary
+                     * @description Maximum file size: 8192 kilobytes.
+                     */
+                    photo: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            photo_url: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "document.deletePhoto": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The patient ID */
+                patient: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
     "document.consents": {
         parameters: {
             query?: never;
@@ -8201,6 +8742,252 @@ export interface operations {
             422: components["responses"]["ValidationException"];
         };
     };
+    "onlineBooking.index": {
+        parameters: {
+            query?: {
+                status?: "pending" | "confirmed" | "declined" | "cancelled" | "all" | null;
+                page?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            reference: string;
+                            status: string;
+                            source: string;
+                            starts_at: string;
+                            local_start: string;
+                            duration_minutes: number;
+                            name: string;
+                            phone: string;
+                            email: string | null;
+                            gender: string | null;
+                            age: number | null;
+                            message: string | null;
+                            branch: {
+                                id: number;
+                                name: string;
+                            };
+                            service: {
+                                id: number;
+                                name: string;
+                            } | null;
+                            practitioner: {
+                                id: number;
+                                name: string;
+                                color: string;
+                            } | null;
+                            patient: {
+                                id: number;
+                                full_name: string;
+                                mrn: string;
+                            } | null;
+                            appointment_id: number | null;
+                            decided_by: string | null;
+                            decided_at: string | null;
+                            decision_note: string | null;
+                            created_at: string | null;
+                        }[];
+                        meta: {
+                            current_page: number;
+                            last_page: number;
+                            total: number;
+                            counts: string[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "onlineBooking.matches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The booking ID */
+                booking: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            full_name: string;
+                            mrn: string;
+                            phone: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "onlineBooking.confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The booking ID */
+                booking: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    patient_id?: number | null;
+                    practitioner_id?: number | null;
+                    local_start?: string | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            reference: string;
+                            status: string;
+                            source: string;
+                            starts_at: string;
+                            local_start: string;
+                            duration_minutes: number;
+                            name: string;
+                            phone: string;
+                            email: string | null;
+                            gender: string | null;
+                            age: number | null;
+                            message: string | null;
+                            branch: {
+                                id: number;
+                                name: string;
+                            };
+                            service: {
+                                id: number;
+                                name: string;
+                            } | null;
+                            practitioner: {
+                                id: number;
+                                name: string;
+                                color: string;
+                            } | null;
+                            patient: {
+                                id: number;
+                                full_name: string;
+                                mrn: string;
+                            } | null;
+                            appointment_id: number | null;
+                            decided_by: string | null;
+                            decided_at: string | null;
+                            decision_note: string | null;
+                            created_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "onlineBooking.decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The booking ID */
+                booking: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    note?: string | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            reference: string;
+                            status: string;
+                            source: string;
+                            starts_at: string;
+                            local_start: string;
+                            duration_minutes: number;
+                            name: string;
+                            phone: string;
+                            email: string | null;
+                            gender: string | null;
+                            age: number | null;
+                            message: string | null;
+                            branch: {
+                                id: number;
+                                name: string;
+                            };
+                            service: {
+                                id: number;
+                                name: string;
+                            } | null;
+                            practitioner: {
+                                id: number;
+                                name: string;
+                                color: string;
+                            } | null;
+                            patient: {
+                                id: number;
+                                full_name: string;
+                                mrn: string;
+                            } | null;
+                            appointment_id: number | null;
+                            decided_by: string | null;
+                            decided_at: string | null;
+                            decision_note: string | null;
+                            created_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
     "package.index": {
         parameters: {
             query?: {
@@ -9159,6 +9946,24 @@ export interface operations {
                             name: string;
                         }[];
                         attendance_grace_minutes?: number;
+                        attendance_geofence?: boolean;
+                        online_booking?: {
+                            enabled?: boolean;
+                            /** @enum {string} */
+                            mode?: "request" | "instant";
+                            min_lead_minutes?: number;
+                            max_days_ahead?: number;
+                            allow_practitioner_choice?: boolean;
+                            intro?: string | null;
+                        };
+                        invoice?: {
+                            terms?: string | null;
+                            footer_note?: string | null;
+                            bank_details?: string | null;
+                            upi_id?: string | null;
+                            signatory?: string | null;
+                            accent_color?: string | null;
+                        };
                         payment_reminders?: {
                             enabled?: boolean;
                             /** @enum {string} */
@@ -9197,6 +10002,67 @@ export interface operations {
             403: components["responses"]["AuthorizationException"];
             404: components["responses"]["ModelNotFoundException"];
             422: components["responses"]["ValidationException"];
+        };
+    };
+    "settings.uploadLogo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /**
+                     * Format: binary
+                     * @description Maximum file size: 2048 kilobytes.
+                     */
+                    logo: string;
+                };
+            };
+        };
+        responses: {
+            /** @description `TenantResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["TenantResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "settings.deleteLogo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `TenantResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["TenantResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
         };
     };
     "settings.branches": {
@@ -9845,6 +10711,7 @@ export interface operations {
             query?: {
                 practitioners_only?: boolean | null;
                 include_inactive?: boolean | null;
+                with_presence?: boolean | null;
             };
             header?: never;
             path?: never;
@@ -9852,13 +10719,19 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Array of `UserResource` */
+            /**
+             * @description Array of `StaffProfileResource`
+             *
+             *     Array of `UserResource`
+             */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        data: components["schemas"]["StaffProfileResource"][];
+                    } | {
                         data: (components["schemas"]["UserResource"] & Record<string, never>)[];
                     };
                 };
@@ -9874,24 +10747,214 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /** @enum {string|null} */
+                    credentials?: "invite" | "password" | "generate" | null;
+                    password?: string | null;
+                    password_confirmation?: string | null;
+                };
+            };
+        };
         responses: {
-            /** @description `UserResource` */
+            /** @description `StaffProfileResource` */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
-                        data: components["schemas"]["UserResource"] & Record<string, never>;
+                        data: components["schemas"]["StaffProfileResource"];
                         meta: {
                             temporary_password: string | null;
+                            credentials: string | "generate";
                         };
                     };
                 };
             };
             401: components["responses"]["AuthenticationException"];
             403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "staff.summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            total: number;
+                            practitioners: number;
+                            clocked_in: number | unknown[];
+                            on_leave: string | 0;
+                            not_in: string | 0;
+                            late: number;
+                            pending_leave: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "staff.roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            permissions: {
+                                /** @enum {string} */
+                                key: "patients.view" | "patients.manage" | "patients.delete" | "appointments.view" | "appointments.manage" | "clinical.view" | "clinical.write" | "exercises.manage" | "enquiries.manage" | "billing.view" | "billing.manage" | "billing.void" | "reports.view" | "staff.manage" | "settings.manage" | "audit.view" | "messages.send" | "attendance.manage" | "leave.approve" | "payroll.manage" | "branches.all";
+                                /** @enum {string} */
+                                label: "View patient demographics" | "Create and edit patients" | "Archive patients" | "View the schedule" | "Book, reschedule and cancel appointments" | "Read assessments, notes and treatment plans" | "Write assessments, notes and treatment plans" | "Maintain the exercise library" | "Capture and follow up enquiries (leads)" | "View invoices and payments" | "Create invoices and record payments" | "Void invoices, issue credit notes and refunds" | "View reports and analytics" | "Manage staff, rooms and working hours" | "Manage clinic settings, services and templates" | "View the audit log" | "Message patients and send payment reminders" | "Record and correct staff attendance" | "Approve or reject leave requests" | "Manage salaries, run payroll and issue payslips" | "Access every branch regardless of membership";
+                            }[];
+                            roles: {
+                                key: number;
+                                label: string;
+                                description: string;
+                                permissions: unknown[];
+                                members: string | 0;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "staff.show": {
+        parameters: {
+            query?: {
+                month?: string | null;
+            };
+            header?: never;
+            path: {
+                /** @description The user ID */
+                user: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            profile: components["schemas"]["StaffProfileResource"];
+                            stats: {
+                                month: string;
+                                timezone: string;
+                                appointments: {
+                                    total: number;
+                                    completed: number;
+                                    cancelled: number;
+                                    no_show: number;
+                                    completion_rate: number | null;
+                                    upcoming_7_days: number;
+                                };
+                                patients_seen: number;
+                                revenue_minor: number;
+                                rating: {
+                                    average: number | null;
+                                    count: number;
+                                };
+                                attendance: {
+                                    /** @constant */
+                                    present: 0;
+                                    /** @constant */
+                                    absent: 0;
+                                    /** @constant */
+                                    leave: 0;
+                                    /** @constant */
+                                    late: 0;
+                                    /** @constant */
+                                    minutes: 0;
+                                    /** @constant */
+                                    unmarked: 0;
+                                } | null;
+                                attendance_days: unknown[][];
+                                leave_balances: {
+                                    leave_type_id: number;
+                                    name: string;
+                                    code: string;
+                                    color: string;
+                                    is_paid: boolean;
+                                    quota: number;
+                                    used: number;
+                                    pending: number;
+                                    remaining: unknown;
+                                }[];
+                                presence_today: {
+                                    state: string;
+                                    check_in: string | null;
+                                    check_out: string | null;
+                                    is_late: boolean;
+                                    leave: string | null;
+                                };
+                            };
+                            permissions: unknown[];
+                            devices: {
+                                id: string;
+                                name: string;
+                                last_used_at: string | null;
+                                created_at: string | null;
+                            }[];
+                            activity: {
+                                id: number;
+                                event: string;
+                                subject: string | null;
+                                subject_id: number | null;
+                                ip: string | null;
+                                at: string;
+                            }[] | string[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example
+                         */
+                        message: string;
+                    };
+                };
+            };
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
         };
     };
     "staff.update": {
@@ -9906,14 +10969,87 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description `UserResource` */
+            /** @description `StaffProfileResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
-                        data: components["schemas"]["UserResource"] & Record<string, never>;
+                        data: components["schemas"]["StaffProfileResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "staff.resetPassword": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The user ID */
+                user: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    mode: "set" | "generate" | "email";
+                    password?: string | null;
+                    require_change?: boolean;
+                    password_confirmation?: string | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        meta: {
+                            temporary_password: string | null;
+                        };
+                    } | {
+                        message: string;
+                        meta: {
+                            temporary_password: null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "staff.revokeSessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The user ID */
+                user: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
                     };
                 };
             };

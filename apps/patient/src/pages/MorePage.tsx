@@ -1,5 +1,5 @@
 import { api, unwrap } from '@physio/api';
-import { resolvedTheme, setThemePreference, SUPPORTED_LANGUAGES } from '@physio/core';
+import { MULTILINGUAL, resolvedTheme, setThemePreference, SUPPORTED_LANGUAGES } from '@physio/core';
 import { Avatar, Button, Card, PageHeader, Segmented, Switch } from '@physio/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { ChevronRight, FileSignature, LineChart, LogOut, ReceiptText } from 'lucide-react';
@@ -41,10 +41,10 @@ export function MorePage() {
         ))}
       </Card>
       <Card className="space-y-4 p-4">
-        <div className="flex items-center justify-between gap-3">
+        {MULTILINGUAL && <div className="flex items-center justify-between gap-3">
           <span className="text-sm font-medium">{t('more.language')}</span>
           <Segmented<string> label={t('more.language')} value={SUPPORTED_LANGUAGES.some((l) => l.code === i18n.language) ? i18n.language : 'en'} onChange={(l) => void i18n.changeLanguage(l)} options={SUPPORTED_LANGUAGES.map((l) => ({ value: l.code, label: <span lang={l.code}>{l.label}</span> }))} />
-        </div>
+        </div>}
         <div className="flex items-center justify-between gap-3">
           <label htmlFor="dark" className="text-sm font-medium">{t('more.theme')}</label>
           <Switch id="dark" checked={dark} onCheckedChange={(v) => { setDark(v); setThemePreference(v ? 'dark' : 'light'); }} />

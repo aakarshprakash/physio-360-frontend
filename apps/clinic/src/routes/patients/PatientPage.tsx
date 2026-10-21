@@ -1,5 +1,5 @@
 import { api, unwrap, type Patient } from '@physio/api';
-import { Avatar, Button, Card, ConfirmDialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, ErrorState, PageLoader, Tabs, TabsContent, TabsList, TabsTrigger, toast } from '@physio/ui';
+import { Button, Card, ConfirmDialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, ErrorState, PageLoader, Tabs, TabsContent, TabsList, TabsTrigger, toast } from '@physio/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Archive, ArrowLeft, CalendarPlus, Mail, MoreHorizontal, Pencil, Phone, ReceiptText } from 'lucide-react';
 import { lazy, Suspense, useState } from 'react';
@@ -11,6 +11,7 @@ import { useSession } from '../../lib/session';
 import { AppointmentDialog } from '../appointments/AppointmentDialog';
 import { useCalendarResources } from '../../lib/appointments';
 import { PatientFormDialog } from './PatientFormDialog';
+import { PatientPhoto } from './PatientPhoto';
 import { OverviewTab } from './tabs/OverviewTab';
 
 const AppointmentsTab = lazy(() => import('./tabs/AppointmentsTab').then((m) => ({ default: m.AppointmentsTab })));
@@ -81,7 +82,7 @@ export function PatientPage() {
 
       <Card className="p-5">
         <div className="flex flex-wrap items-start gap-4">
-          <Avatar name={patient.full_name} size={64} />
+          <PatientPhoto patient={patient} editable={can('patients.manage')} />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-xl font-bold tracking-tight sm:text-2xl">{patient.full_name}</h1>

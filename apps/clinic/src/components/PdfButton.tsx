@@ -1,4 +1,4 @@
-import { SUPPORTED_LANGUAGES } from '@physio/core';
+import { MULTILINGUAL, SUPPORTED_LANGUAGES } from '@physio/core';
 import { Button, cn, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@physio/ui';
 import { ChevronDown, Printer } from 'lucide-react';
 import type { ReactNode } from 'react';
@@ -17,6 +17,15 @@ export function PdfButton({ path, label, small, variant = 'outline', icon = <Pri
   icon?: ReactNode;
 }) {
   const { t, i18n } = useTranslation();
+
+  if (!MULTILINGUAL) {
+    return (
+      <Button variant={variant} size={small ? 'sm' : 'md'} onClick={() => openPdf(path)}>
+        {icon}
+        {label}
+      </Button>
+    );
+  }
 
   return (
     <div className="inline-flex">

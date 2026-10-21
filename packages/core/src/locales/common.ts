@@ -1,3 +1,6 @@
+/** Translations may lag English (the fallback), so other languages are partial. */
+type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K] };
+
 /** Strings shared by all three apps (namespace "common"). */
 export const commonEn = {
   actions: {
@@ -23,6 +26,9 @@ export const commonEn = {
     signIn: 'Sign in',
     loading: 'Loading…',
     more: 'More',
+    done: 'Done',
+    share: 'Share',
+    copy: 'Copy',
   },
   status: {
     scheduled: 'Scheduled',
@@ -106,7 +112,7 @@ export const commonEn = {
   units: { minutes: '{{count}} min', sets: '{{count}} sets', reps: '{{count}} reps', hold: 'hold {{count}}s' },
 };
 
-export const commonAr: typeof commonEn = {
+export const commonAr: DeepPartial<typeof commonEn> = {
   actions: {
     save: 'حفظ',
     saveChanges: 'حفظ التغييرات',
@@ -197,7 +203,7 @@ export const commonAr: typeof commonEn = {
   units: { minutes: '{{count}} دقيقة', sets: '{{count}} مجموعات', reps: '{{count}} تكرار', hold: 'ثبات {{count}} ث' },
 };
 
-export const commonMl: typeof commonEn = {
+export const commonMl: DeepPartial<typeof commonEn> = {
   actions: {
     save: 'സേവ് ചെയ്യുക',
     saveChanges: 'മാറ്റങ്ങൾ സേവ് ചെയ്യുക',

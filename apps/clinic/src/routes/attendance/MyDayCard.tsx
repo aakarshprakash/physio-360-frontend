@@ -1,11 +1,25 @@
 import { api, unwrap, type AttendanceToday } from '@physio/api';
 import { Badge, Button, Card, cn, Skeleton, toast } from '@physio/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { CalendarOff, LogIn, LogOut, Timer } from 'lucide-react';
+import { CalendarOff, LogIn, LogOut, MapPin, Timer } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toastError } from '../../lib/errors';
 import { useFormat } from '../../lib/format';
 import { useDefaultBranchId } from '../../lib/session';
+
+type Fix = { latitude: number; longitude: number; accuracy: number };
+
+/** One high-accuracy GPS reading from the browser (null if unavailable or refused). */
+function currentPosition(): Promise<Fix | null> {
+  return new Promise((resolve) => {
+    if (!navigator.geolocation) return resolve(null);
+    navigator.geolocation.getCurrentPosition(
+      (p) => resolve({ latitude: p.coords.latitude, longitude: p.coords.longitude, accuracy: Math.round(p.coords.accuracy) }),
+      () => resolve(null),
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 },
+    );
+  });
+}
 
 export function useHours() {
   const { t } = useTranslation();
@@ -26,11 +40,17 @@ export function MyDayCard({ className }: { className?: string }) {
     refetchInterval: 60_000,
   });
 
+  const geofenced = Boolean((data as (AttendanceToday & { geofence?: { required: boolean } }) | undefined)?.geofence?.required);
+
   const clock = useMutation({
-    mutationFn: (action: 'in' | 'out') =>
-      action === 'in'
-        ? unwrap(api.POST('/attendance/check-in', { body: { branch_id: branchId || null } as never }))
-        : unwrap(api.POST('/attendance/check-out')),
+    mutationFn: async (action: 'in' | 'out') => {
+      // Location is sent when the clinic geofences clock-in (the server decides).
+      const fix = geofenced ? await currentPosition() : null;
+      const where = fix ? { ...fix, device: 'web' } : { device: 'web' };
+      return action === 'in'
+        ? unwrap(api.POST('/attendance/check-in', { body: { branch_id: branchId || null, ...where } as never }))
+        : unwrap(api.POST('/attendance/check-out', { body: where as never }));
+    },
     onSuccess: (r, action) => {
       const today = (r as unknown as { data: AttendanceToday }).data;
       queryClient.setQueryData(['attendance', 'today'], today);
@@ -57,6 +77,7 @@ export function MyDayCard({ className }: { className?: string }) {
           {data.is_late && <Badge tone="warning">{t('attendance.late')}</Badge>}
         </p>
         {data.minutes_worked != null && <p className="text-xs text-fg-muted">{t('attendance.worked', { time: hours(data.minutes_worked) })}</p>}
+        {geofenced && data.can_check_in && <p className="mt-0.5 inline-flex items-center gap-1 text-xs text-fg-muted"><MapPin className="size-3" />{t('attendance.geofenceHint')}</p>}
       </div>
       {data.can_check_in ? (
         <Button loading={clock.isPending} onClick={() => clock.mutate('in')}><LogIn className="rtl:-scale-x-100" />{t('attendance.clockIn')}</Button>

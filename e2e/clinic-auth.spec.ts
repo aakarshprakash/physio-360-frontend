@@ -34,14 +34,10 @@ test('front desk does not see clinical or admin modules', async ({ page }) => {
   await expect(page.getByText('You do not have permission to do that.')).toBeVisible();
 });
 
-test('switches to Arabic with a right-to-left layout', async ({ page }) => {
+test('runs in English only, without a language picker', async ({ page }) => {
   await signInClinic(page);
-  await page.getByRole('button', { name: /^Language/ }).click();
-  await page.getByRole('menuitem', { name: 'العربية' }).click();
-  await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
-  await expect(page.getByRole('link', { name: 'لوحة التحكم' })).toBeVisible();
-  await page.getByRole('button', { name: /^اللغة/ }).click();
-  await page.getByRole('menuitem', { name: 'English' }).click();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+  await expect(page.getByRole('button', { name: /^Language/ })).toHaveCount(0);
   expect(PASSWORD).toBeTruthy();
 });

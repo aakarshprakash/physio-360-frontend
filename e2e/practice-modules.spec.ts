@@ -37,17 +37,6 @@ test('groups the navigation and switches the whole portal to Malayalam', async (
   await expect(nav.getByRole('link', { name: 'Messages' })).toBeHidden();
   await nav.getByRole('button', { name: 'Communication' }).click();
   await expect(nav.getByRole('link', { name: 'Messages' })).toBeVisible();
-
-  await page.getByRole('button', { name: /^Language:/ }).click();
-  await page.getByRole('menuitem', { name: 'മലയാളം' }).click();
-  await expect(page.locator('html')).toHaveAttribute('lang', 'ml');
-  await expect(page.getByRole('navigation', { name: 'പ്രധാന നാവിഗേഷൻ' }).getByRole('link', { name: 'രോഗികൾ' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('രോഗികൾ');
-
-  // Back to English (the choice is saved to the profile, so later tests depend on it).
-  await page.getByRole('button', { name: /^ഭാഷ:/ }).click();
-  await page.getByRole('menuitem', { name: 'English' }).click();
-  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
 });
 
 test('writes a prescription from a consultation', async ({ page, context }) => {

@@ -1,6 +1,7 @@
 import type { en } from './en';
 
-type Dict<T> = { [K in keyof T]: T[K] extends string ? string : Dict<T[K]> };
+// Partial: English is primary; missing keys fall back to English at runtime.
+type Dict<T> = { [K in keyof T]?: T[K] extends string ? string : Dict<T[K]> };
 
 export const ar: Dict<typeof en> = {
   nav: { home: 'الرئيسية', appointments: 'الزيارات', exercises: 'التمارين', more: 'المزيد', book: 'حجز' },

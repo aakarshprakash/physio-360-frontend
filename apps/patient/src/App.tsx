@@ -24,6 +24,7 @@ const ProgressPage = page(() => import('./pages/ProgressPage'), 'ProgressPage');
 const BillingPage = page(() => import('./pages/BillingPage'), 'BillingPage');
 const ConsentsPage = page(() => import('./pages/ConsentsPage'), 'ConsentsPage');
 const MorePage = page(() => import('./pages/MorePage'), 'MorePage');
+const PublicBookingPage = page(() => import('./pages/PublicBookingPage'), 'PublicBookingPage');
 
 function Shell() {
   const { t } = useTranslation();
@@ -73,6 +74,8 @@ function Guest() {
 
 const router = createBrowserRouter(
   [
+    // Public booking page (link / WhatsApp / website embed): no account needed.
+    { path: '/book/:slug', element: <Suspense fallback={<PageLoader />}><PublicBookingPage /></Suspense> },
     { element: <Guest />, children: [{ path: '/login', element: <LoginPage /> }, { path: '/activate', element: <ActivatePage /> }] },
     {
       element: <Shell />,

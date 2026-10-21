@@ -2,12 +2,14 @@ import { api, onUnauthorized, unwrap, type Branch, type Permission, type StaffUs
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import i18n from 'i18next';
+import { isLanguage } from '@physio/core';
 
 export interface Session {
   user: StaffUser;
   tenant: Tenant;
   branches: Branch[];
   permissions: string[];
+  must_change_password?: boolean;
 }
 
 interface SessionContextValue {
@@ -51,7 +53,7 @@ export function SessionProvider({ session, children }: { session: Session; child
 
   // Staff language preference follows their profile on first load.
   useEffect(() => {
-    if (session.user.locale && session.user.locale !== i18n.language && !localStorage.getItem('physio360.lang')) {
+    if (session.user.locale && isLanguage(session.user.locale) && session.user.locale !== i18n.language && !localStorage.getItem('physio360.lang')) {
       void i18n.changeLanguage(session.user.locale);
     }
   }, [session.user.locale]);

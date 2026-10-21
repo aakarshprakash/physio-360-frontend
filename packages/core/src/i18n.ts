@@ -2,13 +2,27 @@ import i18next, { type BackendModule, type i18n as I18n } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { commonAr, commonEn, commonMl } from './locales/common';
 
-export const SUPPORTED_LANGUAGES = [
+/** Every language the apps have dictionaries for. */
+export const ALL_LANGUAGES = [
   { code: 'en', label: 'English', short: 'EN', dir: 'ltr' },
   { code: 'ar', label: 'العربية', short: 'ع', dir: 'rtl' },
   { code: 'ml', label: 'മലയാളം', short: 'മ', dir: 'ltr' },
 ] as const;
 
-export type Language = (typeof SUPPORTED_LANGUAGES)[number]['code'];
+export type Language = (typeof ALL_LANGUAGES)[number]['code'];
+
+/**
+ * Languages offered in the interface. English only for now: the Arabic and
+ * Malayalam dictionaries are kept (newer strings fall back to English) but
+ * stay switched off until clinics need them. Add codes here to bring a
+ * language back; the pickers reappear automatically.
+ */
+const ENABLED: readonly Language[] = ['en'];
+
+export const SUPPORTED_LANGUAGES: ReadonlyArray<(typeof ALL_LANGUAGES)[number]> = ALL_LANGUAGES.filter((l) => ENABLED.includes(l.code));
+
+/** True when more than one language is enabled (show language pickers). */
+export const MULTILINGUAL = SUPPORTED_LANGUAGES.length > 1;
 
 const STORAGE_KEY = 'physio360.lang';
 
@@ -27,7 +41,7 @@ function storedLanguage(): Language | null {
 
 /** Applies lang + dir to <html>. All layout uses logical CSS properties, so this is the whole RTL switch. */
 export function applyDocumentLanguage(language: string): void {
-  const dir = SUPPORTED_LANGUAGES.find((l) => l.code === language)?.dir ?? 'ltr';
+  const dir = ALL_LANGUAGES.find((l) => l.code === language)?.dir ?? 'ltr';
   document.documentElement.lang = language;
   document.documentElement.dir = dir;
 }
@@ -62,7 +76,7 @@ export async function createI18n(app: { en: AppStrings } & Partial<Record<Exclud
     },
   };
 
-  const lng = storedLanguage() ?? fallback;
+  const lng = storedLanguage() ?? (isLanguage(fallback) ? fallback : 'en');
 
   await i18next.use(lazyBackend).use(initReactI18next).init({
     resources: { en: { common: commonEn, app: app.en } },

@@ -1,5 +1,5 @@
 import { api, type Permission } from '@physio/api';
-import { isLanguage, resolvedTheme, setThemePreference, SUPPORTED_LANGUAGES } from '@physio/core';
+import { isLanguage, MULTILINGUAL, resolvedTheme, setThemePreference, SUPPORTED_LANGUAGES } from '@physio/core';
 import {
   Avatar,
   Button,
@@ -26,6 +26,7 @@ import {
   Dumbbell,
   ExternalLink,
   FileText,
+  Globe,
   Inbox,
   Languages,
   LayoutDashboard,
@@ -50,6 +51,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { useSession } from '../lib/session';
 import { GlobalSearch } from './GlobalSearch';
+import { useOnlineBookingCount } from '../routes/online-bookings/useOnlineBookingCount';
 
 interface NavItem {
   /** Path, optionally with a query string (e.g. a settings section). */
@@ -58,6 +60,8 @@ interface NavItem {
   icon: ComponentType<{ className?: string }>;
   permissions?: Permission[];
   end?: boolean;
+  /** Small count pill (e.g. requests waiting). */
+  badge?: number;
 }
 
 interface NavGroup {
@@ -94,6 +98,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const search = new URLSearchParams(location.search);
 
   useEffect(() => setMobileOpen(false), [location.pathname]);
+  const { data: pendingBookings } = useOnlineBookingCount(canAny('appointments.manage'));
 
   const groups: NavGroup[] = [
     {
@@ -107,6 +112,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       items: [
         { to: '/appointments', label: t('nav.appointments'), icon: CalendarDays, permissions: ['appointments.view'] },
         { to: '/patients', label: t('nav.patients'), icon: Users, permissions: ['patients.view'] },
+        { to: '/online-bookings', label: t('nav.onlineBookings'), icon: Globe, permissions: ['appointments.manage'], badge: pendingBookings },
         { to: '/enquiries', label: t('nav.enquiries'), icon: Inbox, permissions: ['enquiries.manage'] },
         { to: '/consultations', label: t('nav.consultations'), icon: Stethoscope, permissions: ['clinical.view'] },
       ],
@@ -222,7 +228,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                         )}
                       >
                         <item.icon className="size-[18px] shrink-0" />
-                        <span className="line-clamp-2 leading-snug">{item.label}</span>
+                        <span className="line-clamp-2 flex-1 leading-snug">{item.label}</span>
+                        {!!item.badge && <span className="rounded-full bg-accent px-1.5 py-0.5 text-[11px] font-bold leading-none text-midnight tabular">{item.badge}</span>}
                       </Link>
                     </li>
                   );
@@ -325,6 +332,8 @@ export function LanguageMenu({ persist = true }: { persist?: boolean }) {
     void i18n.changeLanguage(code);
     if (persist) void api.PUT('/auth/profile', { body: { locale: code } as never }).catch(() => undefined);
   };
+
+  if (!MULTILINGUAL || !current) return null;
 
   return (
     <DropdownMenu>

@@ -1426,6 +1426,284 @@
                 "security": []
             }
         },
+        "/public/clinics/{slug}/booking": {
+            "get": {
+                "operationId": "publicBooking.show",
+                "summary": "Clinic profile, branches, services and practitioners for the booking page",
+                "tags": [
+                    "Public",
+                    "PublicBooking"
+                ],
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": []
+            },
+            "post": {
+                "operationId": "publicBooking.store",
+                "summary": "Request (or, in instant mode, book) an appointment",
+                "tags": [
+                    "Public",
+                    "PublicBooking"
+                ],
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "branch_id": {
+                                        "type": "integer"
+                                    },
+                                    "service_id": {
+                                        "type": "integer"
+                                    },
+                                    "practitioner_id": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ]
+                                    },
+                                    "local_start": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "minLength": 2,
+                                        "maxLength": 128
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "pattern": "^[+0-9 ()\\-]{7,32}$",
+                                        "maxLength": 32
+                                    },
+                                    "email": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "email",
+                                        "maxLength": 190
+                                    },
+                                    "gender": {
+                                        "anyOf": [
+                                            {
+                                                "$ref": "#/components/schemas/Gender"
+                                            },
+                                            {
+                                                "type": "null"
+                                            }
+                                        ]
+                                    },
+                                    "age": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ],
+                                        "minimum": 1,
+                                        "maximum": 120
+                                    },
+                                    "message": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 1000
+                                    },
+                                    "source": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "pattern": "^[a-z0-9_\\-]+$",
+                                        "maxLength": 24
+                                    },
+                                    "website": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 0
+                                    }
+                                },
+                                "required": [
+                                    "branch_id",
+                                    "service_id",
+                                    "local_start",
+                                    "name",
+                                    "phone"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                },
+                "security": []
+            }
+        },
+        "/public/clinics/{slug}/booking/slots": {
+            "get": {
+                "operationId": "publicBooking.slots",
+                "summary": "Free start times on a date (\"any available\" when no practitioner is chosen)",
+                "tags": [
+                    "Public",
+                    "PublicBooking"
+                ],
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "branch_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "service_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "practitioner_id",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                },
+                "security": []
+            }
+        },
+        "/public/clinics/{slug}/logo": {
+            "get": {
+                "operationId": "publicBooking.logo",
+                "summary": "Clinic logo (letterhead), for the booking page and emails",
+                "tags": [
+                    "Public",
+                    "PublicBooking"
+                ],
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/octet-stream": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Transfer-Encoding": {
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "enum": [
+                                        "chunked"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    }
+                },
+                "security": []
+            }
+        },
         "/platform/auth/login": {
             "post": {
                 "operationId": "platform.login",
@@ -3543,6 +3821,60 @@
                                                 },
                                                 "can_check_out": {
                                                     "type": "boolean"
+                                                },
+                                                "check_in_distance_m": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "geofence": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "required": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "sites": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "branch_id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "latitude": {
+                                                                        "type": [
+                                                                            "number",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "longitude": {
+                                                                        "type": [
+                                                                            "number",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "radius_m": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "branch_id",
+                                                                    "name",
+                                                                    "latitude",
+                                                                    "longitude",
+                                                                    "radius_m"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "required",
+                                                        "sites"
+                                                    ]
                                                 }
                                             },
                                             "required": [
@@ -3555,7 +3887,9 @@
                                                 "is_late",
                                                 "on_leave",
                                                 "can_check_in",
-                                                "can_check_out"
+                                                "can_check_out",
+                                                "check_in_distance_m",
+                                                "geofence"
                                             ]
                                         }
                                     },
@@ -3575,27 +3909,11 @@
         "/attendance/check-in": {
             "post": {
                 "operationId": "attendance.checkIn",
+                "description": "\u26a0\ufe0f Cannot generate request documentation: Cannot evaluate validation rules (1 evaluators failed):\n  [NodeRulesEvaluator] Cannot access private constant App\\Http\\Controllers\\Api\\Staff\\AttendanceController::LOCATION_RULES (at D:\\physio-360\\backend\\vendor\\dedoc\\scramble\\src\\Support\\OperationExtensions\\RulesEvaluator\\ConstFetchEvaluator.php:42)",
                 "tags": [
                     "Staff \u00b7 Attendance",
                     "Attendance"
                 ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "branch_id": {
-                                        "type": [
-                                            "integer",
-                                            "null"
-                                        ]
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
                 "responses": {
                     "200": {
                         "description": "",
@@ -3657,6 +3975,60 @@
                                                 },
                                                 "can_check_out": {
                                                     "type": "boolean"
+                                                },
+                                                "check_in_distance_m": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "geofence": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "required": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "sites": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "branch_id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "latitude": {
+                                                                        "type": [
+                                                                            "number",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "longitude": {
+                                                                        "type": [
+                                                                            "number",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "radius_m": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "branch_id",
+                                                                    "name",
+                                                                    "latitude",
+                                                                    "longitude",
+                                                                    "radius_m"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "required",
+                                                        "sites"
+                                                    ]
                                                 }
                                             },
                                             "required": [
@@ -3669,7 +4041,9 @@
                                                 "is_late",
                                                 "on_leave",
                                                 "can_check_in",
-                                                "can_check_out"
+                                                "can_check_out",
+                                                "check_in_distance_m",
+                                                "geofence"
                                             ]
                                         }
                                     },
@@ -3692,6 +4066,7 @@
         "/attendance/check-out": {
             "post": {
                 "operationId": "attendance.checkOut",
+                "description": "\u26a0\ufe0f Cannot generate request documentation: Cannot evaluate validation rules (1 evaluators failed):\n  [NodeRulesEvaluator] Cannot access private constant App\\Http\\Controllers\\Api\\Staff\\AttendanceController::LOCATION_RULES (at D:\\physio-360\\backend\\vendor\\dedoc\\scramble\\src\\Support\\OperationExtensions\\RulesEvaluator\\ConstFetchEvaluator.php:42)",
                 "tags": [
                     "Staff \u00b7 Attendance",
                     "Attendance"
@@ -3757,6 +4132,60 @@
                                                 },
                                                 "can_check_out": {
                                                     "type": "boolean"
+                                                },
+                                                "check_in_distance_m": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "geofence": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "required": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "sites": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "branch_id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "latitude": {
+                                                                        "type": [
+                                                                            "number",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "longitude": {
+                                                                        "type": [
+                                                                            "number",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "radius_m": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "branch_id",
+                                                                    "name",
+                                                                    "latitude",
+                                                                    "longitude",
+                                                                    "radius_m"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "required",
+                                                        "sites"
+                                                    ]
                                                 }
                                             },
                                             "required": [
@@ -3769,7 +4198,9 @@
                                                 "is_late",
                                                 "on_leave",
                                                 "can_check_in",
-                                                "can_check_out"
+                                                "can_check_out",
+                                                "check_in_distance_m",
+                                                "geofence"
                                             ]
                                         }
                                     },
@@ -3779,6 +4210,9 @@
                                 }
                             }
                         }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
@@ -4118,6 +4552,60 @@
                 "security": []
             }
         },
+        "/auth/token": {
+            "post": {
+                "operationId": "auth.token",
+                "summary": "Mobile app sign-in: returns a bearer token (send as \"Authorization: Bearer \u2026\")",
+                "tags": [
+                    "Staff \u00b7 Auth",
+                    "Auth"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "device_name": {
+                                        "type": "string",
+                                        "maxLength": 96
+                                    }
+                                },
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "device_name"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                },
+                "security": []
+            }
+        },
         "/auth/forgot-password": {
             "post": {
                 "operationId": "auth.forgotPassword",
@@ -4239,7 +4727,7 @@
         "/auth/logout": {
             "post": {
                 "operationId": "auth.logout",
-                "summary": "Sign out and invalidate the session",
+                "summary": "Sign out: revokes the mobile token, or ends the web session",
                 "tags": [
                     "Staff \u00b7 Auth",
                     "Auth"
@@ -4315,13 +4803,17 @@
                                                 "permissions": {
                                                     "type": "array",
                                                     "items": {}
+                                                },
+                                                "must_change_password": {
+                                                    "type": "boolean"
                                                 }
                                             },
                                             "required": [
                                                 "user",
                                                 "tenant",
                                                 "branches",
-                                                "permissions"
+                                                "permissions",
+                                                "must_change_password"
                                             ]
                                         }
                                     },
@@ -4412,13 +4904,17 @@
                                                 "permissions": {
                                                     "type": "array",
                                                     "items": {}
+                                                },
+                                                "must_change_password": {
+                                                    "type": "boolean"
                                                 }
                                             },
                                             "required": [
                                                 "user",
                                                 "tenant",
                                                 "branches",
-                                                "permissions"
+                                                "permissions",
+                                                "must_change_password"
                                             ]
                                         }
                                     },
@@ -8370,6 +8866,171 @@
                 }
             }
         },
+        "/patients/{patient}/photo": {
+            "get": {
+                "operationId": "document.photo",
+                "summary": "Profile photo (identification at the front desk and in the mobile app)",
+                "tags": [
+                    "Staff \u00b7 Documents & consent",
+                    "Document"
+                ],
+                "parameters": [
+                    {
+                        "name": "patient",
+                        "in": "path",
+                        "required": true,
+                        "description": "The patient ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/octet-stream": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Transfer-Encoding": {
+                                "required": true,
+                                "schema": {
+                                    "type": "string",
+                                    "enum": [
+                                        "chunked"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "document.uploadPhoto",
+                "tags": [
+                    "Staff \u00b7 Documents & consent",
+                    "Document"
+                ],
+                "parameters": [
+                    {
+                        "name": "patient",
+                        "in": "path",
+                        "required": true,
+                        "description": "The patient ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "photo": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "contentMediaType": "application/octet-stream",
+                                        "description": "Maximum file size: 8192 kilobytes."
+                                    }
+                                },
+                                "required": [
+                                    "photo"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "photo_url": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "photo_url"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "document.deletePhoto",
+                "tags": [
+                    "Staff \u00b7 Documents & consent",
+                    "Document"
+                ],
+                "parameters": [
+                    {
+                        "name": "patient",
+                        "in": "path",
+                        "required": true,
+                        "description": "The patient ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/patients/{patient}/consents": {
             "get": {
                 "operationId": "document.consents",
@@ -11952,6 +12613,884 @@
                 }
             }
         },
+        "/online-bookings": {
+            "get": {
+                "operationId": "onlineBooking.index",
+                "tags": [
+                    "Staff \u00b7 Online booking",
+                    "OnlineBooking"
+                ],
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "enum": [
+                                "pending",
+                                "confirmed",
+                                "declined",
+                                "cancelled",
+                                "all",
+                                null
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "reference": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string"
+                                                    },
+                                                    "source": {
+                                                        "type": "string"
+                                                    },
+                                                    "starts_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "local_start": {
+                                                        "type": "string"
+                                                    },
+                                                    "duration_minutes": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "phone": {
+                                                        "type": "string"
+                                                    },
+                                                    "email": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "gender": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "age": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "message": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "branch": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name"
+                                                        ]
+                                                    },
+                                                    "service": {
+                                                        "type": [
+                                                            "object",
+                                                            "null"
+                                                        ],
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name"
+                                                        ]
+                                                    },
+                                                    "practitioner": {
+                                                        "type": [
+                                                            "object",
+                                                            "null"
+                                                        ],
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "color": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "color"
+                                                        ]
+                                                    },
+                                                    "patient": {
+                                                        "type": [
+                                                            "object",
+                                                            "null"
+                                                        ],
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "full_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "mrn": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "full_name",
+                                                            "mrn"
+                                                        ]
+                                                    },
+                                                    "appointment_id": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "decided_by": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "decided_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "decision_note": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "created_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "reference",
+                                                    "status",
+                                                    "source",
+                                                    "starts_at",
+                                                    "local_start",
+                                                    "duration_minutes",
+                                                    "name",
+                                                    "phone",
+                                                    "email",
+                                                    "gender",
+                                                    "age",
+                                                    "message",
+                                                    "branch",
+                                                    "service",
+                                                    "practitioner",
+                                                    "patient",
+                                                    "appointment_id",
+                                                    "decided_by",
+                                                    "decided_at",
+                                                    "decision_note",
+                                                    "created_at"
+                                                ]
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer"
+                                                },
+                                                "last_page": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "counts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "last_page",
+                                                "total",
+                                                "counts"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/online-bookings/{booking}/matches": {
+            "get": {
+                "operationId": "onlineBooking.matches",
+                "summary": "Existing patients this request could belong to (same phone number)",
+                "tags": [
+                    "Staff \u00b7 Online booking",
+                    "OnlineBooking"
+                ],
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "required": true,
+                        "description": "The booking ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "full_name": {
+                                                        "type": "string"
+                                                    },
+                                                    "mrn": {
+                                                        "type": "string"
+                                                    },
+                                                    "phone": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "full_name",
+                                                    "mrn",
+                                                    "phone"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/online-bookings/{booking}/confirm": {
+            "post": {
+                "operationId": "onlineBooking.confirm",
+                "tags": [
+                    "Staff \u00b7 Online booking",
+                    "OnlineBooking"
+                ],
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "required": true,
+                        "description": "The booking ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "patient_id": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ]
+                                    },
+                                    "practitioner_id": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ]
+                                    },
+                                    "local_start": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "reference": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "source": {
+                                                    "type": "string"
+                                                },
+                                                "starts_at": {
+                                                    "type": "string"
+                                                },
+                                                "local_start": {
+                                                    "type": "string"
+                                                },
+                                                "duration_minutes": {
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "phone": {
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "gender": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "age": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "message": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "branch": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name"
+                                                    ]
+                                                },
+                                                "service": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name"
+                                                    ]
+                                                },
+                                                "practitioner": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "color": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "color"
+                                                    ]
+                                                },
+                                                "patient": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "full_name": {
+                                                            "type": "string"
+                                                        },
+                                                        "mrn": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "full_name",
+                                                        "mrn"
+                                                    ]
+                                                },
+                                                "appointment_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "decided_by": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "decided_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "decision_note": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "reference",
+                                                "status",
+                                                "source",
+                                                "starts_at",
+                                                "local_start",
+                                                "duration_minutes",
+                                                "name",
+                                                "phone",
+                                                "email",
+                                                "gender",
+                                                "age",
+                                                "message",
+                                                "branch",
+                                                "service",
+                                                "practitioner",
+                                                "patient",
+                                                "appointment_id",
+                                                "decided_by",
+                                                "decided_at",
+                                                "decision_note",
+                                                "created_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/online-bookings/{booking}/decline": {
+            "post": {
+                "operationId": "onlineBooking.decline",
+                "tags": [
+                    "Staff \u00b7 Online booking",
+                    "OnlineBooking"
+                ],
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "required": true,
+                        "description": "The booking ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "note": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 255
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "reference": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "source": {
+                                                    "type": "string"
+                                                },
+                                                "starts_at": {
+                                                    "type": "string"
+                                                },
+                                                "local_start": {
+                                                    "type": "string"
+                                                },
+                                                "duration_minutes": {
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "phone": {
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "gender": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "age": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "message": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "branch": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name"
+                                                    ]
+                                                },
+                                                "service": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name"
+                                                    ]
+                                                },
+                                                "practitioner": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "color": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "color"
+                                                    ]
+                                                },
+                                                "patient": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "full_name": {
+                                                            "type": "string"
+                                                        },
+                                                        "mrn": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "full_name",
+                                                        "mrn"
+                                                    ]
+                                                },
+                                                "appointment_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "decided_by": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "decided_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "decision_note": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "reference",
+                                                "status",
+                                                "source",
+                                                "starts_at",
+                                                "local_start",
+                                                "duration_minutes",
+                                                "name",
+                                                "phone",
+                                                "email",
+                                                "gender",
+                                                "age",
+                                                "message",
+                                                "branch",
+                                                "service",
+                                                "practitioner",
+                                                "patient",
+                                                "appointment_id",
+                                                "decided_by",
+                                                "decided_at",
+                                                "decision_note",
+                                                "created_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/packages": {
             "get": {
                 "operationId": "package.index",
@@ -14370,6 +15909,92 @@
                                                 "minimum": 0,
                                                 "maximum": 120
                                             },
+                                            "attendance_geofence": {
+                                                "type": "boolean"
+                                            },
+                                            "online_booking": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "enabled": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "mode": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "request",
+                                                            "instant"
+                                                        ]
+                                                    },
+                                                    "min_lead_minutes": {
+                                                        "type": "integer",
+                                                        "minimum": 0,
+                                                        "maximum": 10080
+                                                    },
+                                                    "max_days_ahead": {
+                                                        "type": "integer",
+                                                        "minimum": 1,
+                                                        "maximum": 180
+                                                    },
+                                                    "allow_practitioner_choice": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "intro": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ],
+                                                        "maxLength": 500
+                                                    }
+                                                }
+                                            },
+                                            "invoice": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "terms": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ],
+                                                        "maxLength": 1000
+                                                    },
+                                                    "footer_note": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ],
+                                                        "maxLength": 255
+                                                    },
+                                                    "bank_details": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ],
+                                                        "maxLength": 500
+                                                    },
+                                                    "upi_id": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ],
+                                                        "pattern": "^[\\w.\\-]{2,64}@[A-Za-z]{2,64}$",
+                                                        "maxLength": 64
+                                                    },
+                                                    "signatory": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ],
+                                                        "maxLength": 120
+                                                    },
+                                                    "accent_color": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ],
+                                                        "pattern": "^#[0-9A-Fa-f]{6}$"
+                                                    }
+                                                }
+                                            },
                                             "payment_reminders": {
                                                 "type": "object",
                                                 "properties": {
@@ -14479,6 +16104,105 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/settings/clinic/logo": {
+            "post": {
+                "operationId": "settings.uploadLogo",
+                "summary": "Letterhead logo used on invoices, receipts and the public booking page",
+                "tags": [
+                    "Staff \u00b7 Settings",
+                    "Settings"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "logo": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "contentMediaType": "application/octet-stream",
+                                        "description": "Maximum file size: 2048 kilobytes."
+                                    }
+                                },
+                                "required": [
+                                    "logo"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`TenantResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TenantResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "settings.deleteLogo",
+                "tags": [
+                    "Staff \u00b7 Settings",
+                    "Settings"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TenantResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TenantResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
                     },
                     "404": {
                         "$ref": "#/components/responses/ModelNotFoundException"
@@ -15713,7 +17437,7 @@
         "/staff": {
             "get": {
                 "operationId": "staff.index",
-                "summary": "Everyone can list colleagues (needed for pickers); details are limited",
+                "summary": "Everyone can list colleagues (needed for pickers); details are limited.\nTeam managers can ask for today's presence alongside each person",
                 "tags": [
                     "Staff \u00b7 Team",
                     "Staff"
@@ -15738,35 +17462,63 @@
                                 "null"
                             ]
                         }
+                    },
+                    {
+                        "name": "with_presence",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "boolean",
+                                "null"
+                            ]
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Array of `UserResource`",
+                        "description": "Array of `StaffProfileResource`\n\nArray of `UserResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "allOf": [
-                                                    {
-                                                        "$ref": "#/components/schemas/UserResource"
-                                                    },
-                                                    {
-                                                        "type": "object",
-                                                        "required": [
-                                                            "roles"
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/StaffProfileResource"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/UserResource"
+                                                            },
+                                                            {
+                                                                "type": "object",
+                                                                "required": [
+                                                                    "roles"
+                                                                ]
+                                                            }
                                                         ]
                                                     }
-                                                ]
-                                            }
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ]
                                         }
-                                    },
-                                    "required": [
-                                        "data"
                                     ]
                                 }
                             }
@@ -15782,31 +17534,56 @@
             },
             "post": {
                 "operationId": "staff.store",
-                "summary": "Add a team member. They receive a password-setup email (reset link);\na temporary password is returned only when no mail can be sent",
+                "summary": "Add a team member and choose how they get their first password:\n\"invite\" emails a set-password link, \"password\" uses the one given,\n\"generate\" creates one and returns it once. Admin-issued passwords\nmust be changed at first sign-in",
                 "tags": [
                     "Staff \u00b7 Team",
                     "Staff"
                 ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "credentials": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "enum": [
+                                            "invite",
+                                            "password",
+                                            "generate",
+                                            null
+                                        ]
+                                    },
+                                    "password": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "password_confirmation": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "201": {
-                        "description": "`UserResource`",
+                        "description": "`StaffProfileResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "allOf": [
-                                                {
-                                                    "$ref": "#/components/schemas/UserResource"
-                                                },
-                                                {
-                                                    "type": "object",
-                                                    "required": [
-                                                        "roles"
-                                                    ]
-                                                }
-                                            ]
+                                            "$ref": "#/components/schemas/StaffProfileResource"
                                         },
                                         "meta": {
                                             "type": "object",
@@ -15816,10 +17593,24 @@
                                                         "string",
                                                         "null"
                                                     ]
+                                                },
+                                                "credentials": {
+                                                    "anyOf": [
+                                                        {
+                                                            "type": "string"
+                                                        },
+                                                        {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "generate"
+                                                            ]
+                                                        }
+                                                    ]
                                                 }
                                             },
                                             "required": [
-                                                "temporary_password"
+                                                "temporary_password",
+                                                "credentials"
                                             ]
                                         }
                                     },
@@ -15834,6 +17625,248 @@
                     "403": {
                         "$ref": "#/components/responses/AuthorizationException"
                     },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/staff/summary": {
+            "get": {
+                "operationId": "staff.summary",
+                "summary": "Headline numbers for the team directory",
+                "tags": [
+                    "Staff \u00b7 Team",
+                    "Staff"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                },
+                                                "practitioners": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                },
+                                                "clocked_in": {
+                                                    "type": [
+                                                        "number",
+                                                        "array"
+                                                    ]
+                                                },
+                                                "on_leave": {
+                                                    "anyOf": [
+                                                        {
+                                                            "type": "string"
+                                                        },
+                                                        {
+                                                            "type": "integer",
+                                                            "enum": [
+                                                                0
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                "not_in": {
+                                                    "anyOf": [
+                                                        {
+                                                            "type": "string"
+                                                        },
+                                                        {
+                                                            "type": "integer",
+                                                            "enum": [
+                                                                0
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                "late": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                },
+                                                "pending_leave": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "total",
+                                                "practitioners",
+                                                "clocked_in",
+                                                "on_leave",
+                                                "not_in",
+                                                "late",
+                                                "pending_leave"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/staff/roles": {
+            "get": {
+                "operationId": "staff.roles",
+                "summary": "Roles, what each one can do, and how many people hold it",
+                "tags": [
+                    "Staff \u00b7 Team",
+                    "Staff"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "permissions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "patients.view",
+                                                                    "patients.manage",
+                                                                    "patients.delete",
+                                                                    "appointments.view",
+                                                                    "appointments.manage",
+                                                                    "clinical.view",
+                                                                    "clinical.write",
+                                                                    "exercises.manage",
+                                                                    "enquiries.manage",
+                                                                    "billing.view",
+                                                                    "billing.manage",
+                                                                    "billing.void",
+                                                                    "reports.view",
+                                                                    "staff.manage",
+                                                                    "settings.manage",
+                                                                    "audit.view",
+                                                                    "messages.send",
+                                                                    "attendance.manage",
+                                                                    "leave.approve",
+                                                                    "payroll.manage",
+                                                                    "branches.all"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "View patient demographics",
+                                                                    "Create and edit patients",
+                                                                    "Archive patients",
+                                                                    "View the schedule",
+                                                                    "Book, reschedule and cancel appointments",
+                                                                    "Read assessments, notes and treatment plans",
+                                                                    "Write assessments, notes and treatment plans",
+                                                                    "Maintain the exercise library",
+                                                                    "Capture and follow up enquiries (leads)",
+                                                                    "View invoices and payments",
+                                                                    "Create invoices and record payments",
+                                                                    "Void invoices, issue credit notes and refunds",
+                                                                    "View reports and analytics",
+                                                                    "Manage staff, rooms and working hours",
+                                                                    "Manage clinic settings, services and templates",
+                                                                    "View the audit log",
+                                                                    "Message patients and send payment reminders",
+                                                                    "Record and correct staff attendance",
+                                                                    "Approve or reject leave requests",
+                                                                    "Manage salaries, run payroll and issue payslips",
+                                                                    "Access every branch regardless of membership"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "label"
+                                                        ]
+                                                    }
+                                                },
+                                                "roles": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "integer"
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "description": {
+                                                                "type": "string"
+                                                            },
+                                                            "permissions": {
+                                                                "type": "array",
+                                                                "items": {}
+                                                            },
+                                                            "members": {
+                                                                "anyOf": [
+                                                                    {
+                                                                        "type": "string"
+                                                                    },
+                                                                    {
+                                                                        "type": "integer",
+                                                                        "enum": [
+                                                                            0
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "label",
+                                                            "description",
+                                                            "permissions",
+                                                            "members"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "permissions",
+                                                "roles"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
                     }
@@ -15841,6 +17874,400 @@
             }
         },
         "/staff/{user}": {
+            "get": {
+                "operationId": "staff.show",
+                "summary": "Employee profile with this month's performance, attendance and leave",
+                "tags": [
+                    "Staff \u00b7 Team",
+                    "Staff"
+                ],
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "description": "The user ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "month",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "profile": {
+                                                    "$ref": "#/components/schemas/StaffProfileResource"
+                                                },
+                                                "stats": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "month": {
+                                                            "type": "string"
+                                                        },
+                                                        "timezone": {
+                                                            "type": "string"
+                                                        },
+                                                        "appointments": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "total": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "completed": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "cancelled": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "no_show": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "completion_rate": {
+                                                                    "type": [
+                                                                        "number",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "upcoming_7_days": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "total",
+                                                                "completed",
+                                                                "cancelled",
+                                                                "no_show",
+                                                                "completion_rate",
+                                                                "upcoming_7_days"
+                                                            ]
+                                                        },
+                                                        "patients_seen": {
+                                                            "type": "integer",
+                                                            "minimum": 0
+                                                        },
+                                                        "revenue_minor": {
+                                                            "type": "integer"
+                                                        },
+                                                        "rating": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "average": {
+                                                                    "type": [
+                                                                        "number",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "count": {
+                                                                    "type": "integer",
+                                                                    "minimum": 0
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "average",
+                                                                "count"
+                                                            ]
+                                                        },
+                                                        "attendance": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "present": {
+                                                                    "type": "number",
+                                                                    "const": 0
+                                                                },
+                                                                "absent": {
+                                                                    "type": "number",
+                                                                    "const": 0
+                                                                },
+                                                                "leave": {
+                                                                    "type": "number",
+                                                                    "const": 0
+                                                                },
+                                                                "late": {
+                                                                    "type": "integer",
+                                                                    "const": 0
+                                                                },
+                                                                "minutes": {
+                                                                    "type": "integer",
+                                                                    "const": 0
+                                                                },
+                                                                "unmarked": {
+                                                                    "type": "integer",
+                                                                    "const": 0
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "present",
+                                                                "absent",
+                                                                "leave",
+                                                                "late",
+                                                                "minutes",
+                                                                "unmarked"
+                                                            ]
+                                                        },
+                                                        "attendance_days": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "array",
+                                                                "items": {}
+                                                            }
+                                                        },
+                                                        "leave_balances": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "leave_type_id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "code": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "color": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "is_paid": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "quota": {
+                                                                        "type": "number"
+                                                                    },
+                                                                    "used": {
+                                                                        "type": "number"
+                                                                    },
+                                                                    "pending": {
+                                                                        "type": "number"
+                                                                    },
+                                                                    "remaining": {}
+                                                                },
+                                                                "required": [
+                                                                    "leave_type_id",
+                                                                    "name",
+                                                                    "code",
+                                                                    "color",
+                                                                    "is_paid",
+                                                                    "quota",
+                                                                    "used",
+                                                                    "pending",
+                                                                    "remaining"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "presence_today": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "state": {
+                                                                    "type": "string"
+                                                                },
+                                                                "check_in": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "check_out": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "is_late": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "leave": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "state",
+                                                                "check_in",
+                                                                "check_out",
+                                                                "is_late",
+                                                                "leave"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "month",
+                                                        "timezone",
+                                                        "appointments",
+                                                        "patients_seen",
+                                                        "revenue_minor",
+                                                        "rating",
+                                                        "attendance",
+                                                        "attendance_days",
+                                                        "leave_balances",
+                                                        "presence_today"
+                                                    ]
+                                                },
+                                                "permissions": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "devices": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "last_used_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "created_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "last_used_at",
+                                                            "created_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "activity": {
+                                                    "anyOf": [
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "event": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "subject": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "subject_id": {
+                                                                        "type": [
+                                                                            "integer",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "ip": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "at": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "event",
+                                                                    "subject",
+                                                                    "subject_id",
+                                                                    "ip",
+                                                                    "at"
+                                                                ]
+                                                            }
+                                                        },
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            },
+                                                            "minItems": 0,
+                                                            "maxItems": 0
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "profile",
+                                                "stats",
+                                                "permissions",
+                                                "devices",
+                                                "activity"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "examples": [
+                                                ""
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
             "put": {
                 "operationId": "staff.update",
                 "tags": [
@@ -15860,28 +18287,201 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`UserResource`",
+                        "description": "`StaffProfileResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "allOf": [
-                                                {
-                                                    "$ref": "#/components/schemas/UserResource"
-                                                },
-                                                {
-                                                    "type": "object",
-                                                    "required": [
-                                                        "roles"
-                                                    ]
-                                                }
-                                            ]
+                                            "$ref": "#/components/schemas/StaffProfileResource"
                                         }
                                     },
                                     "required": [
                                         "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/staff/{user}/password": {
+            "post": {
+                "operationId": "staff.resetPassword",
+                "summary": "Reset a team member's password: set one, generate one (returned once),\nor email a reset link. Signs them out of every device",
+                "tags": [
+                    "Staff \u00b7 Team",
+                    "Staff"
+                ],
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "description": "The user ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "mode": {
+                                        "type": "string",
+                                        "enum": [
+                                            "set",
+                                            "generate",
+                                            "email"
+                                        ]
+                                    },
+                                    "password": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "require_change": {
+                                        "type": "boolean"
+                                    },
+                                    "password_confirmation": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "mode"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string"
+                                                },
+                                                "meta": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "temporary_password": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "temporary_password"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "message",
+                                                "meta"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string"
+                                                },
+                                                "meta": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "temporary_password": {
+                                                            "type": "null"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "temporary_password"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "message",
+                                                "meta"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/staff/{user}/sign-out": {
+            "post": {
+                "operationId": "staff.revokeSessions",
+                "summary": "Sign a team member out of the web portal and the mobile app",
+                "tags": [
+                    "Staff \u00b7 Team",
+                    "Staff"
+                ],
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "description": "The user ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
                                     ]
                                 }
                             }
@@ -17473,6 +20073,21 @@
                     },
                     "is_active": {
                         "type": "boolean"
+                    },
+                    "latitude": {
+                        "type": [
+                            "number",
+                            "null"
+                        ]
+                    },
+                    "longitude": {
+                        "type": [
+                            "number",
+                            "null"
+                        ]
+                    },
+                    "geofence_radius_m": {
+                        "type": "integer"
                     }
                 },
                 "required": [
@@ -17484,7 +20099,10 @@
                     "address",
                     "city",
                     "timezone",
-                    "is_active"
+                    "is_active",
+                    "latitude",
+                    "longitude",
+                    "geofence_radius_m"
                 ],
                 "title": "BranchResource"
             },
@@ -19337,6 +21955,12 @@
                     "portal_enabled": {
                         "type": "boolean"
                     },
+                    "photo_url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
                     "created_at": {
                         "type": "string"
                     }
@@ -19363,6 +21987,7 @@
                     "primary_branch_id",
                     "status",
                     "portal_enabled",
+                    "photo_url",
                     "created_at"
                 ],
                 "title": "PatientResource"
@@ -20005,6 +22630,15 @@
                     },
                     "is_active": {
                         "type": "boolean"
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "online_bookable": {
+                        "type": "boolean"
                     }
                 },
                 "required": [
@@ -20016,9 +22650,16 @@
                     "price_minor",
                     "tax_rate_bp",
                     "color",
-                    "is_active"
+                    "is_active",
+                    "description",
+                    "online_bookable"
                 ],
                 "title": "ServiceResource"
+            },
+            "StaffProfileResource": {
+                "type": "array",
+                "items": {},
+                "title": "StaffProfileResource"
             },
             "SupportTicketResource": {
                 "type": "object",
@@ -20172,6 +22813,12 @@
                     "plan": {
                         "type": "string"
                     },
+                    "logo_url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
                     "currency": {
                         "type": "object",
                         "properties": {
@@ -20231,6 +22878,57 @@
                             "attendance_grace_minutes": {
                                 "type": "integer"
                             },
+                            "attendance_geofence": {
+                                "type": "boolean"
+                            },
+                            "online_booking": {
+                                "type": "object",
+                                "properties": {
+                                    "enabled": {
+                                        "type": "boolean"
+                                    },
+                                    "mode": {
+                                        "type": "string"
+                                    },
+                                    "min_lead_minutes": {
+                                        "type": "integer"
+                                    },
+                                    "max_days_ahead": {
+                                        "type": "integer"
+                                    },
+                                    "allow_practitioner_choice": {
+                                        "type": "boolean"
+                                    },
+                                    "intro": {}
+                                },
+                                "required": [
+                                    "enabled",
+                                    "mode",
+                                    "min_lead_minutes",
+                                    "max_days_ahead",
+                                    "allow_practitioner_choice",
+                                    "intro"
+                                ]
+                            },
+                            "invoice": {
+                                "type": "object",
+                                "properties": {
+                                    "terms": {},
+                                    "footer_note": {},
+                                    "bank_details": {},
+                                    "upi_id": {},
+                                    "signatory": {},
+                                    "accent_color": {}
+                                },
+                                "required": [
+                                    "terms",
+                                    "footer_note",
+                                    "bank_details",
+                                    "upi_id",
+                                    "signatory",
+                                    "accent_color"
+                                ]
+                            },
                             "payment_reminders": {
                                 "type": "object",
                                 "properties": {
@@ -20264,6 +22962,9 @@
                             "weekly_off_days",
                             "holidays",
                             "attendance_grace_minutes",
+                            "attendance_geofence",
+                            "online_booking",
+                            "invoice",
                             "payment_reminders"
                         ]
                     },
@@ -20304,6 +23005,7 @@
                     "locale",
                     "status",
                     "plan",
+                    "logo_url",
                     "currency",
                     "settings",
                     "online_payments_enabled",
@@ -20495,6 +23197,9 @@
                     },
                     "last_login_at": {
                         "type": "string"
+                    },
+                    "must_change_password": {
+                        "type": "boolean"
                     }
                 },
                 "required": [

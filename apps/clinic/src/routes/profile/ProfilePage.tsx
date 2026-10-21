@@ -1,5 +1,5 @@
 import { api, ApiError, unwrap } from '@physio/api';
-import { getThemePreference, setThemePreference, SUPPORTED_LANGUAGES, type ThemePreference } from '@physio/core';
+import { getThemePreference, MULTILINGUAL, setThemePreference, SUPPORTED_LANGUAGES, type ThemePreference } from '@physio/core';
 import { Alert, Button, Card, CardContent, CardHeader, Field, Input, PageHeader, Segmented, toast } from '@physio/ui';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -49,7 +49,7 @@ export function ProfilePage() {
         <Card>
           <CardHeader title={t('profile.appearance')} />
           <CardContent className="flex flex-wrap items-center gap-6">
-            <div>
+            {MULTILINGUAL && <div>
               <p className="mb-2 text-[13px] font-medium">{t('profile.language')}</p>
               <Segmented<string>
                 label={t('profile.language')}
@@ -60,7 +60,7 @@ export function ProfilePage() {
                 }}
                 options={SUPPORTED_LANGUAGES.map((l) => ({ value: l.code, label: <span lang={l.code}>{l.label}</span> }))}
               />
-            </div>
+            </div>}
             <div>
               <p className="mb-2 text-[13px] font-medium">{t('common:theme.toggle')}</p>
               <Segmented<ThemePreference>

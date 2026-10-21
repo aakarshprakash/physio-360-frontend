@@ -1,5 +1,5 @@
 import { api, ApiError, unwrap } from '@physio/api';
-import { SUPPORTED_LANGUAGES } from '@physio/core';
+import { MULTILINGUAL, SUPPORTED_LANGUAGES } from '@physio/core';
 import { Alert, Button, Field, Input, Logo } from '@physio/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { Languages } from 'lucide-react';
@@ -14,7 +14,7 @@ function Frame({ title, subtitle, children }: { title: string; subtitle: string;
     <div className="mx-auto flex min-h-dvh max-w-md flex-col px-5 py-6">
       <div className="flex items-center justify-between">
         <Logo />
-        <label className="relative inline-flex items-center gap-1.5 rounded-lg px-2 text-[13px] font-medium text-fg-muted hover:bg-surface-3">
+        {MULTILINGUAL && <label className="relative inline-flex items-center gap-1.5 rounded-lg px-2 text-[13px] font-medium text-fg-muted hover:bg-surface-3">
           <Languages className="size-4" aria-hidden />
           <span className="sr-only">{t('more.language')}</span>
           <select
@@ -24,7 +24,7 @@ function Frame({ title, subtitle, children }: { title: string; subtitle: string;
           >
             {SUPPORTED_LANGUAGES.map((l) => <option key={l.code} value={l.code} lang={l.code}>{l.label}</option>)}
           </select>
-        </label>
+        </label>}
       </div>
       <div className="flex flex-1 flex-col justify-center py-8">
         <h1 className="text-2xl font-bold tracking-tight">{title}</h1>

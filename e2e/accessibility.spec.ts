@@ -27,32 +27,35 @@ test.describe('WCAG 2.1 AA (axe): no serious or critical violations', () => {
     }
   });
 
-  test('clinic portal in Malayalam', async ({ page }) => {
-    await page.addInitScript(() => localStorage.setItem('physio360.lang', 'ml'));
-    await page.goto(`${URLS.clinic}/login`);
-    await page.getByLabel('ഇമെയിൽ').fill('sarah@physio360.test');
-    await page.getByRole('textbox', { name: 'പാസ്‌വേഡ്' }).fill(PASSWORD);
-    await page.getByRole('button', { name: 'സൈൻ ഇൻ' }).click();
-    for (const path of ['/', '/attendance', '/leave', '/payment-reminders', '/patients/1?tab=timeline']) {
+  test('team, online booking and invoice settings', async ({ page }) => {
+    await signInClinic(page);
+    for (const path of [
+      '/staff', '/staff?tab=roles', '/staff/2', '/staff/2?tab=attendance', '/staff/2?tab=access',
+      '/online-bookings', '/settings?section=booking', '/settings?section=invoice', '/settings?section=branches',
+    ]) {
       await page.goto(`${URLS.clinic}${path}`);
-      await expectAccessible(page, `${path} (ml)`);
+      await expectAccessible(page, path);
     }
   });
 
-  test('clinic portal in Arabic and dark mode', async ({ page }) => {
+  test('clinic portal in dark mode', async ({ page }) => {
+    // A stale stored language from before English-only is ignored.
     await page.addInitScript(() => {
       localStorage.setItem('physio360.lang', 'ar');
       localStorage.setItem('physio360.theme', 'dark');
     });
-    await signInClinic(page).catch(async () => {
-      // Labels are Arabic after the language switch.
-      await page.getByLabel('البريد الإلكتروني').fill('sarah@physio360.test');
-      await page.getByRole('textbox', { name: 'كلمة المرور' }).fill(PASSWORD);
-      await page.getByRole('button', { name: 'تسجيل الدخول' }).click();
-    });
-    for (const path of ['/', '/patients/1', '/billing']) {
+    await signInClinic(page);
+    for (const path of ['/', '/patients/1', '/billing', '/staff/2']) {
       await page.goto(`${URLS.clinic}${path}`);
-      await expectAccessible(page, `${path} (ar, dark)`);
+      await expectAccessible(page, `${path} (dark)`);
+    }
+  });
+
+  test('public booking page', async ({ page }) => {
+    for (const viewport of [{ width: 390, height: 844 }, { width: 1280, height: 900 }]) {
+      await page.setViewportSize(viewport);
+      await page.goto(`${URLS.patient}/book/demo`);
+      await expectAccessible(page, `public booking ${viewport.width}px`);
     }
   });
 

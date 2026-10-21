@@ -2,7 +2,7 @@ import { api, unwrap, type Branch, type ConsentTemplate, type InsurancePayer, ty
 import { SUPPORTED_LANGUAGES } from '@physio/core';
 import { Alert, Badge, Button, Card, CardContent, CardHeader, Checkbox, cn, Dialog, DialogContent, Field, Input, Label, PageHeader, Select, Switch, Table, Td, Textarea, Th, toast } from '@physio/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Building2, CalendarOff, CreditCard, FileSignature, Layers, MessageCircle, Package, Plus, ShieldCheck, Smartphone, Stethoscope, Trash2 } from 'lucide-react';
+import { Building2, CalendarOff, CreditCard, FileSignature, FileText, Globe, Layers, LocateFixed, MapPin, MessageCircle, Package, Plus, ShieldCheck, Smartphone, Stethoscope, Trash2 } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
@@ -12,11 +12,15 @@ import { errorMessage, toastError } from '../../lib/errors';
 import { useFormat } from '../../lib/format';
 import { useUrlState } from '../../lib/hooks';
 import { useSession } from '../../lib/session';
+import { InvoiceSection } from './InvoiceSettings';
+import { OnlineBookingSection } from './OnlineBookingSettings';
 
 const SECTIONS = [
   { key: 'clinic', icon: Building2 },
   { key: 'branches', icon: Layers },
   { key: 'services', icon: Stethoscope },
+  { key: 'booking', icon: Globe },
+  { key: 'invoice', icon: FileText },
   { key: 'packages', icon: Package },
   { key: 'payers', icon: ShieldCheck },
   { key: 'consents', icon: FileSignature },
@@ -29,6 +33,8 @@ const SECTIONS = [
 const SECTION_COMPONENTS: Record<string, () => ReactNode> = {
   branches: () => <BranchesSection />,
   services: () => <ServicesSection />,
+  booking: () => <OnlineBookingSection />,
+  invoice: () => <InvoiceSection />,
   packages: () => <PackagesSection />,
   payers: () => <PayersSection />,
   consents: () => <ConsentsSection />,
@@ -191,6 +197,35 @@ function CatalogSection<T extends { id: number; is_active?: boolean }>({
   );
 }
 
+/** Branch location for geofenced clock-in: type coordinates or use this device's location. */
+function GeoFields({ value: v, set }: { value: Record<string, unknown>; set: (p: Record<string, unknown>) => void }) {
+  const { t } = useTranslation();
+  const [locating, setLocating] = useState(false);
+  const locate = () => {
+    if (!navigator.geolocation) return void toast.error(t('settings.noGeolocation'));
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => { setLocating(false); set({ latitude: pos.coords.latitude.toFixed(7), longitude: pos.coords.longitude.toFixed(7) }); },
+      () => { setLocating(false); toast.error(t('settings.noGeolocation')); },
+      { enableHighAccuracy: true, timeout: 15000 },
+    );
+  };
+  const has = v.latitude !== '' && v.longitude !== '';
+  return (
+    <fieldset className="grid gap-3 rounded-lg border border-border p-3 sm:col-span-2 sm:grid-cols-3">
+      <legend className="px-1 text-[13px] font-medium">{t('settings.geofence')}</legend>
+      <p className="text-xs text-fg-muted sm:col-span-3">{t('settings.geofenceBranchHelp')}</p>
+      <Field label={t('settings.latitude')}><Input inputMode="decimal" value={v.latitude as string} onChange={(e) => set({ latitude: e.target.value })} placeholder="9.9658" /></Field>
+      <Field label={t('settings.longitude')}><Input inputMode="decimal" value={v.longitude as string} onChange={(e) => set({ longitude: e.target.value })} placeholder="76.2875" /></Field>
+      <Field label={t('settings.radius')}><Input type="number" min={25} max={5000} step={25} value={v.geofence_radius_m as number} onChange={(e) => set({ geofence_radius_m: Number(e.target.value) })} /></Field>
+      <div className="flex flex-wrap gap-2 sm:col-span-3">
+        <Button size="sm" variant="outline" loading={locating} onClick={locate}><LocateFixed />{t('settings.useMyLocation')}</Button>
+        {has && <Button size="sm" variant="ghost" asChild><a href={`https://www.google.com/maps?q=${String(v.latitude)},${String(v.longitude)}`} target="_blank" rel="noreferrer"><MapPin />{t('settings.viewOnMap')}</a></Button>}
+      </div>
+    </fieldset>
+  );
+}
+
 const ActiveSwitch = ({ value, set }: { value: Record<string, unknown>; set: (p: Record<string, unknown>) => void }) => {
   const { t } = useTranslation();
   return (
@@ -217,8 +252,9 @@ function BranchesSection() {
         { label: 'Code', render: (b) => <Badge>{b.code}</Badge> },
         { label: t('settings.city'), render: (b) => b.city ?? '—' },
         { label: t('patients.phone'), render: (b) => b.phone ?? '—' },
+        { label: t('settings.geofence'), render: (b) => (b.latitude != null ? <Badge tone="success"><MapPin className="size-3" />{b.geofence_radius_m} m</Badge> : <span className="text-xs text-fg-subtle">{t('settings.noLocation')}</span>) },
       ]}
-      initial={(b) => ({ name: b?.name ?? '', code: b?.code ?? '', city: b?.city ?? '', phone: b?.phone ?? '', address: b?.address ?? '', is_active: b?.is_active ?? true })}
+      initial={(b) => ({ name: b?.name ?? '', code: b?.code ?? '', city: b?.city ?? '', phone: b?.phone ?? '', address: b?.address ?? '', is_active: b?.is_active ?? true, latitude: b?.latitude != null ? String(b.latitude) : '', longitude: b?.longitude != null ? String(b.longitude) : '', geofence_radius_m: b?.geofence_radius_m ?? 150 })}
       renderForm={(v, set) => (
         <>
           <Field label={t('settings.branchName')} required><Input value={v.name as string} onChange={(e) => set({ name: e.target.value })} /></Field>
@@ -226,11 +262,12 @@ function BranchesSection() {
           <Field label={t('settings.city')}><Input value={v.city as string} onChange={(e) => set({ city: e.target.value })} /></Field>
           <Field label={t('patients.phone')}><Input value={v.phone as string} onChange={(e) => set({ phone: e.target.value })} /></Field>
           <Field label={t('settings.address')} className="sm:col-span-2"><Input value={v.address as string} onChange={(e) => set({ address: e.target.value })} /></Field>
+          <GeoFields value={v} set={set} />
           <ActiveSwitch value={v} set={set} />
         </>
       )}
       onSave={async (v, b) => {
-        const body = { ...v, city: v.city || null, phone: v.phone || null, address: v.address || null };
+        const body = { ...v, city: v.city || null, phone: v.phone || null, address: v.address || null, latitude: v.latitude === '' ? null : Number(v.latitude), longitude: v.longitude === '' ? null : Number(v.longitude), geofence_radius_m: Number(v.geofence_radius_m) || 150 };
         await (b ? unwrap(api.PUT('/settings/branches/{branch}', { params: { path: { branch: b.id } }, body: body as never })) : unwrap(api.POST('/settings/branches', { body: body as never })));
         void queryClient.invalidateQueries({ queryKey: ['branches'] });
         void refresh();
@@ -254,8 +291,9 @@ function ServicesSection() {
         { label: t('settings.duration'), render: (s) => `${s.duration_minutes} min` },
         { label: t('settings.price'), render: (s) => <span className="tabular">{f.money(s.price_minor)}</span>, className: 'text-end' },
         { label: t('settings.taxRate'), render: (s) => (s.tax_rate_bp ? `${s.tax_rate_bp / 100}%` : '—'), className: 'text-end' },
+        { label: t('settings.online'), render: (s) => (s.online_bookable ? <Badge tone="success">{t('settings.onlineYes')}</Badge> : <span className="text-xs text-fg-subtle">—</span>) },
       ]}
-      initial={(s) => ({ name: s?.name ?? '', category: s?.category ?? '', duration_minutes: s?.duration_minutes ?? 45, price_minor: s?.price_minor ?? null, tax: s ? String(s.tax_rate_bp / 100) : '0', color: s?.color ?? '#3E8E76', is_active: s?.is_active ?? true })}
+      initial={(s) => ({ name: s?.name ?? '', category: s?.category ?? '', duration_minutes: s?.duration_minutes ?? 45, price_minor: s?.price_minor ?? null, tax: s ? String(s.tax_rate_bp / 100) : '0', color: s?.color ?? '#3E8E76', is_active: s?.is_active ?? true, description: s?.description ?? '', online_bookable: s?.online_bookable ?? true })}
       renderForm={(v, set) => (
         <>
           <Field label={t('settings.serviceName')} required className="sm:col-span-2"><Input value={v.name as string} onChange={(e) => set({ name: e.target.value })} /></Field>
@@ -264,11 +302,13 @@ function ServicesSection() {
           <Field label={t('settings.price')} required><MoneyInput value={v.price_minor as number | null} onChange={(m) => set({ price_minor: m })} /></Field>
           <Field label={t('settings.taxRate')}><Input inputMode="decimal" value={v.tax as string} onChange={(e) => set({ tax: e.target.value })} /></Field>
           <Field label={t('settings.colour')}><Input type="color" className="h-10 w-20 p-1" value={v.color as string} onChange={(e) => set({ color: e.target.value })} /></Field>
+          <Field label={t('settings.serviceDescription')} className="sm:col-span-2" hint={t('settings.serviceDescriptionHint')}><Textarea rows={2} maxLength={500} value={v.description as string} onChange={(e) => set({ description: e.target.value })} /></Field>
+          <div className="flex items-center gap-3 sm:col-span-2"><Switch id="svc-online" checked={v.online_bookable as boolean} onCheckedChange={(x) => set({ online_bookable: x })} /><Label htmlFor="svc-online">{t('settings.onlineBookable')}</Label></div>
           <ActiveSwitch value={v} set={set} />
         </>
       )}
       onSave={async (v, s) => {
-        const body = { name: v.name, category: v.category || null, duration_minutes: v.duration_minutes, price_minor: v.price_minor ?? 0, tax_rate_bp: Math.round(Number(v.tax || 0) * 100), color: v.color, is_active: v.is_active };
+        const body = { name: v.name, category: v.category || null, duration_minutes: v.duration_minutes, price_minor: v.price_minor ?? 0, tax_rate_bp: Math.round(Number(v.tax || 0) * 100), color: v.color, is_active: v.is_active, description: v.description || null, online_bookable: v.online_bookable };
         await (s ? unwrap(api.PUT('/settings/services/{service}', { params: { path: { service: s.id } }, body: body as never })) : unwrap(api.POST('/settings/services', { body: body as never })));
         void queryClient.invalidateQueries({ queryKey: ['services'] });
       }}
@@ -464,10 +504,10 @@ function HrSection() {
   const queryClient = useQueryClient();
   const { data: clinic } = useClinic();
   const save = useSaveClinic();
-  const [draft, setDraft] = useState<{ weekly_off_days: number[]; holidays: { date: string; name: string }[]; attendance_grace_minutes: number } | null>(null);
+  const [draft, setDraft] = useState<{ weekly_off_days: number[]; holidays: { date: string; name: string }[]; attendance_grace_minutes: number; attendance_geofence: boolean } | null>(null);
   const { data: types } = useQuery({ queryKey: ['leave-types'], queryFn: async () => (await unwrap(api.GET('/leave-types'))).data as unknown as LeaveType[] });
   if (!clinic) return null;
-  const v = draft ?? { weekly_off_days: clinic.settings.weekly_off_days as number[], holidays: clinic.settings.holidays, attendance_grace_minutes: clinic.settings.attendance_grace_minutes };
+  const v = draft ?? { weekly_off_days: clinic.settings.weekly_off_days as number[], holidays: clinic.settings.holidays, attendance_grace_minutes: clinic.settings.attendance_grace_minutes, attendance_geofence: Boolean((clinic.settings as { attendance_geofence?: boolean }).attendance_geofence) };
   const weekdays = t('staff.weekdays', { returnObjects: true }) as string[];
 
   return (
@@ -486,6 +526,13 @@ function HrSection() {
               ))}
             </div>
           </fieldset>
+          <div className="flex items-start justify-between gap-4 rounded-lg border border-border p-3">
+            <div>
+              <Label htmlFor="geofence" className="flex items-center gap-2"><MapPin className="size-4" />{t('settings.geofenceRequired')}</Label>
+              <p className="mt-1 text-xs text-fg-muted">{t('settings.geofenceHelp')} <Link to="/settings?section=branches" className="text-primary underline underline-offset-2">{t('settings.setBranchLocations')}</Link></p>
+            </div>
+            <Switch id="geofence" checked={v.attendance_geofence} onCheckedChange={(x) => setDraft({ ...v, attendance_geofence: x })} />
+          </div>
           <Field label={t('settings.graceMinutes')} className="max-w-xs">
             <Input type="number" min={0} max={120} value={v.attendance_grace_minutes} onChange={(e) => setDraft({ ...v, attendance_grace_minutes: Number(e.target.value) })} />
           </Field>
